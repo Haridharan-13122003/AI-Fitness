@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant - AI Fitness</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="dashboard.html" class="nav-brand">AI Fitness</a>
+        <div class="nav-links">
+            <a href="dashboard.html" class="btn btn-outline" id="nav-dash-btn">Dashboard</a>
+            <button onclick="logout()" class="btn btn-danger" id="nav-logout-btn">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>AI Fitness Assistant</h2>
+        <p>Ask a quick question about workouts, diets, or fitness facts.</p>
+
+        <div class="card chat-window">
+            <div class="chat-messages" id="chat-box">
+                <div class="msg bot">Hello! I'm your AI fitness assistant. How can I help you today? Try asking me about 'weight loss', 'muscle gain', or 'stamina'.</div>
+            </div>
+            <form class="chat-input-area" id="chat-form">
+                <input type="text" id="chat-input" placeholder="Type your message..." required autocomplete="off">
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const chatBox = document.getElementById('chat-box');
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const msgText = chatInput.value.trim();
+            if(!msgText) return;
+
+            // Add user message to UI
+            appendMessage(msgText, 'user');
+            chatInput.value = '';
+
+            // Loading indicator
+            const typingMsg = document.createElement('div');
+            typingMsg.className = 'msg bot';
+            typingMsg.textContent = 'Typing...';
+            chatBox.appendChild(typingMsg);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                const res = await fetch(`${API_URL}/chat`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ message: msgText })
+                });
+                const data = await res.json();
+                
+                // Remove typing indicator and append response
+                chatBox.removeChild(typingMsg);
+                appendMessage(data.reply, 'bot');
+            } catch(e) {
+                chatBox.removeChild(typingMsg);
+                appendMessage('Sorry, I am having trouble connecting right now.', 'bot');
+            }
+        });
+
+        function appendMessage(text, sender) {
+            const div = document.createElement('div');
+            div.className = `msg ${sender}`;
+            div.textContent = text;
+            chatBox.appendChild(div);
+            // Auto scroll to bottom
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>

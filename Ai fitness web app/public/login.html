@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - AI Fitness</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand">AI Fitness</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </div>
+    </nav>
+
+    <div class="container" style="display: flex; justify-content: center; align-items: center; min-height: 70vh;">
+        <div class="card" style="width: 100%; max-width: 450px;">
+            <h2>Login</h2>
+            <p>Welcome back! Enter your details to continue.</p>
+            <div id="login-msg" class="message"></div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" id="log-username" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="log-password" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%">Login</button>
+                <div style="text-align: center; margin-top: 1.5rem; font-weight: 500;">
+                    <a href="register.html">Don't have an account? Register</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const u = document.getElementById('log-username').value;
+            const p = document.getElementById('log-password').value;
+            
+            try {
+                const res = await fetch(API_URL + '/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json'},
+                    body: JSON.stringify({username: u, password: p})
+                });
+                const data = await res.json();
+                if(res.ok) {
+                    localStorage.setItem('userId', data.userId);
+                    localStorage.setItem('username', data.username);
+                    window.location.href = 'dashboard.html';
+                } else {
+                    showMessage('login-msg', data.error, 'error');
+                }
+            } catch(err) {
+                showMessage('login-msg', 'Server error', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

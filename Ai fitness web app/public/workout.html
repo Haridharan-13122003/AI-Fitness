@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workout Planner - AI Fitness</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .workout-list { list-style-type: none; margin-top: 1rem; }
+        .workout-list li { background: #f8fafc; margin-bottom: 0.5rem; padding: 1rem; border-radius: var(--border-radius); border-left: 3px solid var(--primary-color); }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="dashboard.html" class="nav-brand">AI Fitness</a>
+        <div class="nav-links">
+            <a href="dashboard.html" class="btn btn-outline" id="nav-dash-btn">Dashboard</a>
+            <button onclick="logout()" class="btn btn-danger" id="nav-logout-btn">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Personalized Workout Planner</h2>
+        <p>Set your current profile to get an AI-generated beginner-friendly routine.</p>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3>Your Profile</h3>
+                <div id="profile-msg" class="message"></div>
+                <form id="profile-form">
+                    <div class="form-group">
+                        <label class="form-label">Age</label>
+                        <input type="number" id="age" class="form-control" required min="10" max="120">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Fitness Goal</label>
+                        <select id="goal" class="form-control" required>
+                            <option value="">Select Goal...</option>
+                            <option value="weight loss">Weight Loss</option>
+                            <option value="muscle gain">Muscle Gain</option>
+                            <option value="general fitness">General Fitness</option>
+                            <option value="stamina improvement">Stamina Improvement</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save & Generate Routine</button>
+                    <button type="button" class="btn btn-outline" onclick="document.getElementById('profile-form').reset()">Reset</button>
+                </form>
+            </div>
+
+            <div class="card" id="routine-container" style="display:none;">
+                <h3>Your AI Routine</h3>
+                <p id="routine-desc" style="color: var(--primary-color);"></p>
+                <ul class="workout-list" id="routine-list">
+                    <!-- Automatically populated -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userId = localStorage.getItem('userId');
+            // Fetch existing data
+            try {
+                const res = await fetch(`${API_URL}/user/${userId}`);
+                if(res.ok) {
+                    const data = await res.json();
+                    if(data.age) document.getElementById('age').value = data.age;
+                    if(data.goal) document.getElementById('goal').value = data.goal;
+                    if(data.goal) generateRoutine(data.goal); // Auto generate if goal exists
+                }
+            } catch(e) {}
+        });
+
+        document.getElementById('profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const age = document.getElementById('age').value;
+            const goal = document.getElementById('goal').value;
+            const userId = localStorage.getItem('userId');
+
+            try {
+                const res = await fetch(`${API_URL}/user/${userId}`, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ age, goal })
+                });
+                if(res.ok) {
+                    showMessage('profile-msg', 'Profile updated!', 'success');
+                    generateRoutine(goal);
+                }
+            } catch(err) {
+                showMessage('profile-msg', 'Error updating profile', 'error');
+            }
+        });
+
+        function generateRoutine(goal) {
+            document.getElementById('routine-container').style.display = 'block';
+            const list = document.getElementById('routine-list');
+            const desc = document.getElementById('routine-desc');
+            list.innerHTML = '';
+
+            // Simple rule-based "AI" suggestion logic for beginner workouts
+            const baseWarmup = "Warmup: 5 mins light jogging or Jumping Jacks. Dynamic stretching.";
+            let routines = [];
+
+            if(goal === 'weight loss') {
+                desc.textContent = "High Intensity & Caloric Burn Focus.";
+                routines = [baseWarmup, "Burpees - 3 sets of 10 reps", "Squats - 3 sets of 15 reps", "Mountain Climbers - 3 sets of 30 sec", "Plank - 3 sets of 45 sec", "Cool Down: 5 mins static stretching"];
+            } else if(goal === 'muscle gain') {
+                desc.textContent = "Hypertrophy & Strength Focus.";
+                routines = [baseWarmup, "Push-ups - 4 sets of 8-12 reps", "Bodyweight Squats (or weighted) - 4 sets of 10-15 reps", "Pull-ups or Inverted Rows - 4 sets to failure", "Lunges - 3 sets of 12 reps per leg", "Cool Down: Stretching"];
+            } else if(goal === 'stamina improvement') {
+                desc.textContent = "Cardiovascular Endurance Focus.";
+                routines = [baseWarmup, "Running - 20 mins moderate pace", "Jump Rope - 5 mins continuous", "High Knees - 3 sets of 60 sec", "Burpees - 3 sets of 15 reps", "Cool Down: Deep breathing and stretching"];
+            } else {
+                // general fitness
+                desc.textContent = "Balanced Full Body Routine.";
+                routines = [baseWarmup, "Jumping Jacks - 3 sets of 30 reps", "Push-ups - 3 sets of 10 reps", "Squats - 3 sets of 15 reps", "Plank - 3 sets of 30 sec", "Cool Down: 5 mins stretching"];
+            }
+
+            routines.forEach(r => {
+                const li = document.createElement('li');
+                li.textContent = r;
+                list.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>

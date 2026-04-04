@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - AI Fitness</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand">AI Fitness</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html" style="color: var(--primary-color);">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="login.html" class="btn btn-outline" id="nav-login-btn">Login</a>
+            <a href="register.html" class="btn btn-primary" id="nav-register-btn">Register</a>
+            <a href="dashboard.html" class="btn btn-primary" id="nav-dash-btn" style="display:none;">Dashboard</a>
+            <button onclick="logout()" class="btn btn-danger" id="nav-logout-btn" style="display:none;">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>About AI Fitness Trainer</h2>
+        <div class="card" style="margin-top: 1rem;">
+            <h3>Our Mission</h3>
+            <p>Our goal is to make professional fitness guidance accessible to everyone. By leveraging simple AI rules and personalized data input, we aim to provide actionable, easy-to-understand fitness plans for people of all experience levels.</p>
+            
+            <h3 style="margin-top: 2rem;">How it Works</h3>
+            <ol style="margin-left: 1.5rem; color: var(--text-secondary); line-height: 1.8;">
+                <li><strong>Register & Login:</strong> Create an account securely.</li>
+                <li><strong>Provide Details:</strong> Use the BMI calculator and Profile tab to input your height, weight, age, and fitness goals.</li>
+                <li><strong>Get Your Plan:</strong> Read your personalized workout and diet suggestions based on your data.</li>
+                <li><strong>Track & Chat:</strong> Record your daily progress and chat with our mock AI for instant motivational advice.</li>
+            </ol>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 AI Fitness Trainer Web App. Built for wellbeing.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

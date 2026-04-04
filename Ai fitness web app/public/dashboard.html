@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AI Fitness</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand">AI Fitness</a>
+        <div class="nav-links">
+            <a href="dashboard.html" class="btn btn-primary" id="nav-dash-btn">Dashboard</a>
+            <button onclick="logout()" class="btn btn-danger" id="nav-logout-btn">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 style="margin-bottom: 0.5rem;" id="welcome-msg">Welcome back!</h2>
+        <p style="color: var(--primary-color); font-weight: 500; margin-bottom: 2rem;">"Consistency is what transforms average into excellence."</p>
+
+        <div class="grid-3">
+            <a href="workout.html" class="card" style="text-decoration: none; display: block; border-left: 4px solid var(--primary-color);">
+                <h3>🏋️‍♂️ Workout Planner</h3>
+                <p>Generate personalized routines based on your goals.</p>
+            </a>
+            
+            <a href="bmi.html" class="card" style="text-decoration: none; display: block; border-left: 4px solid var(--secondary-color);">
+                <h3>⚖️ BMI Calculator</h3>
+                <p>Update your body metrics and assess your health standing.</p>
+            </a>
+
+            <a href="diet.html" class="card" style="text-decoration: none; display: block; border-left: 4px solid var(--success-color);">
+                <h3>🥗 Diet Recommendation</h3>
+                <p>Structured nutritional guidance for your fitness goals.</p>
+            </a>
+
+            <a href="progress.html" class="card" style="text-decoration: none; display: block; border-left: 4px solid var(--text-primary);">
+                <h3>📈 Progress Tracker</h3>
+                <p>Log your journey and view weekly adherence.</p>
+            </a>
+
+            <a href="chatbot.html" class="card" style="text-decoration: none; display: block; border-left: 4px solid #8e44ad;">
+                <h3>🤖 AI Assistant</h3>
+                <p>Chat with your digital coach for quick advice.</p>
+            </a>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const username = localStorage.getItem('username');
+            if(username) {
+                document.getElementById('welcome-msg').textContent = `Welcome back, ${username}!`;
+            }
+        });
+    </script>
+</body>
+</html>
