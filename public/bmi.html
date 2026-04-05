@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator - AI Fitness</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="dashboard.html" class="nav-brand">AI Fitness</a>
+        <div class="nav-links">
+            <a href="dashboard.html" class="btn btn-outline" id="nav-dash-btn">Dashboard</a>
+            <button onclick="logout()" class="btn btn-danger" id="nav-logout-btn">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>BMI Calculator</h2>
+        <p>Your Body Mass Index (BMI) is a simple metric to check if you are at a healthy weight.</p>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3>Enter Your Metrics</h3>
+                <div id="bmi-msg" class="message"></div>
+                <form id="bmi-form">
+                    <div class="form-group">
+                        <label class="form-label">Height (cm)</label>
+                        <input type="number" step="0.1" id="height" class="form-control" required min="50" max="300">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Weight (kg)</label>
+                        <input type="number" step="0.1" id="weight" class="form-control" required min="10" max="400">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gender</label>
+                        <select id="gender" class="form-control" required>
+                            <option value="">Select Gender...</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Calculate & Save</button>
+                    <button type="button" class="btn btn-outline" onclick="document.getElementById('bmi-form').reset(); document.getElementById('bmi-result').style.display = 'none';">Reset</button>
+                </form>
+            </div>
+
+            <div class="card" id="bmi-result" style="display:none; text-align: center;">
+                <h3>Your BMI Result</h3>
+                <div style="font-size: 3rem; font-weight: 700; color: var(--primary-color); margin: 1rem 0;" id="bmi-value">--</div>
+                <p id="bmi-status" style="font-size: 1.2rem; font-weight: 600;"></p>
+                <div style="margin-top: 1rem; color: var(--text-secondary); text-align: left;">
+                    <strong>Interpretation:</strong>
+                    <ul>
+                        <li>Underweight: &lt; 18.5</li>
+                        <li>Normal weight: 18.5 - 24.9</li>
+                        <li>Overweight: 25 - 29.9</li>
+                        <li>Obese: 30 or greater</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userId = localStorage.getItem('userId');
+            try {
+                const res = await fetch(`${API_URL}/user/${userId}`);
+                if(res.ok) {
+                    const data = await res.json();
+                    if(data.height) document.getElementById('height').value = data.height;
+                    if(data.weight) document.getElementById('weight').value = data.weight;
+                    if(data.gender) document.getElementById('gender').value = data.gender;
+                }
+            } catch(e) {}
+        });
+
+        document.getElementById('bmi-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const height = parseFloat(document.getElementById('height').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const gender = document.getElementById('gender').value;
+            const userId = localStorage.getItem('userId');
+
+            // Calculate BMI
+            const heightInMeters = height / 100;
+            const bmi = (weight / (heightInMeters * heightInMeters)).toFixed(1);
+
+            let status = "";
+            let color = "";
+            if (bmi < 18.5) { status = "Underweight"; color = "var(--secondary-color)"; }
+            else if (bmi >= 18.5 && bmi < 25) { status = "Normal weight"; color = "var(--success-color)"; }
+            else if (bmi >= 25 && bmi < 30) { status = "Overweight"; color = "orange"; }
+            else { status = "Obese"; color = "var(--danger-color)"; }
+
+            document.getElementById('bmi-value').textContent = bmi;
+            document.getElementById('bmi-status').textContent = status;
+            document.getElementById('bmi-status').style.color = color;
+            document.getElementById('bmi-result').style.display = 'block';
+
+            // Save to DB
+            try {
+                // Fetch existing age and goal so we don't overwrite them with null in our simple PUT setup
+                const currentUserRes = await fetch(`${API_URL}/user/${userId}`);
+                const currentUser = await currentUserRes.json();
+
+                await fetch(`${API_URL}/user/${userId}`, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ 
+                        age: currentUser.age, 
+                        height, 
+                        weight, 
+                        gender, 
+                        goal: currentUser.goal 
+                    })
+                });
+                showMessage('bmi-msg', 'Metrics calculated and saved.', 'success');
+            } catch(err) {
+                showMessage('bmi-msg', 'Error saving metrics.', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

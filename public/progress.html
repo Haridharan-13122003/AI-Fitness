@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Tracker - AI Fitness</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="dashboard.html" class="nav-brand">AI Fitness</a>
+        <div class="nav-links">
+            <a href="dashboard.html" class="btn btn-outline" id="nav-dash-btn">Dashboard</a>
+            <button onclick="logout()" class="btn btn-danger" id="nav-logout-btn">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Progress Tracker</h2>
+        <p>Log your daily or weekly weigh-ins and notes to stay accountable.</p>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3>Add New Entry</h3>
+                <div id="prog-msg" class="message"></div>
+                <form id="progress-form">
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="date" id="date" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Weight (kg)</label>
+                        <input type="number" step="0.1" id="weight" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Notes / Feelings</label>
+                        <input type="text" id="notes" class="form-control" placeholder="E.g., Felt great during run today">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="margin-right: 0.5rem;">Save Entry</button>
+                    <button type="button" class="btn btn-outline" onclick="document.getElementById('progress-form').reset()">Reset Form</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>History</h3>
+                <div style="max-height: 400px; overflow-y: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Weight</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('date').valueAsDate = new Date();
+            fetchHistory();
+        });
+
+        async function fetchHistory() {
+            const userId = localStorage.getItem('userId');
+            try {
+                const res = await fetch(`${API_URL}/progress/${userId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    const tbody = document.getElementById('history-table');
+                    tbody.innerHTML = '';
+                    data.forEach(entry => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${entry.date}</td>
+                            <td><strong style="color:var(--primary-color)">${entry.weight} kg</strong></td>
+                            <td>${entry.notes || '-'}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch (err) {
+                console.error("Error fetching history");
+            }
+        }
+
+        document.getElementById('progress-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const date = document.getElementById('date').value;
+            const weight = parseFloat(document.getElementById('weight').value);
+            const notes = document.getElementById('notes').value;
+            const userId = localStorage.getItem('userId');
+
+            try {
+                const res = await fetch(`${API_URL}/progress`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ user_id: userId, date, weight, notes })
+                });
+                if (res.ok) {
+                    showMessage('prog-msg', 'Entry added successfully.', 'success');
+                    fetchHistory();
+                } else {
+                    showMessage('prog-msg', 'Failed to add entry.', 'error');
+                }
+            } catch (err) {
+                showMessage('prog-msg', 'Server error.', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Fitness Trainer</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
+            AI Fitness
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="login.html" class="btn btn-outline" id="nav-login-btn">Login</a>
+            <a href="register.html" class="btn btn-primary" id="nav-register-btn">Register</a>
+            <a href="dashboard.html" class="btn btn-primary" id="nav-dash-btn" style="display:none;">Dashboard</a>
+            <button onclick="logout()" class="btn btn-danger" id="nav-logout-btn" style="display:none;">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section class="hero">
+            <h1>Your Intelligent Fitness Journey Starts Here.</h1>
+            <p>Achieve your goals with personalized AI-driven workout plans, diet suggestions, and progress tracking designed just for you in a sustainable way.</p>
+            <a href="login.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 0.75rem 1.5rem;">Get Started</a>
+        </section>
+
+        <section class="grid-3" style="margin-top: 4rem;">
+            <div class="card" style="text-align: center;">
+                <h3 style="color: var(--primary-color);">AI Personalized Plans</h3>
+                <p>We analyze your height, weight, age, and goals to produce tailored workout strategies.</p>
+            </div>
+            <div class="card" style="text-align: center;">
+                <h3 style="color: var(--primary-color);">Progress Tracking</h3>
+                <p>Visualize your consistency over time. Simple metrics for real world adherence.</p>
+            </div>
+            <div class="card" style="text-align: center;">
+                <h3 style="color: var(--primary-color);">Diet & BMI Guidance</h3>
+                <p>Understand your metrics and receive sustainable macronutrient balancing advice.</p>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 AI Fitness Trainer Web App. Built for wellbeing.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

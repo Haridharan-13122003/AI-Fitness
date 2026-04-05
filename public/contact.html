@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - AI Fitness</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-brand">AI Fitness</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contact.html" style="color: var(--primary-color);">Contact</a>
+            <a href="login.html" class="btn btn-outline" id="nav-login-btn">Login</a>
+            <a href="register.html" class="btn btn-primary" id="nav-register-btn">Register</a>
+            <a href="dashboard.html" class="btn btn-primary" id="nav-dash-btn" style="display:none;">Dashboard</a>
+            <button onclick="logout()" class="btn btn-danger" id="nav-logout-btn" style="display:none;">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Contact Us</h2>
+        <p>Have questions or feedback? We'd love to hear from you.</p>
+
+        <div class="grid-2" style="margin-top: 1rem;">
+            <div class="card">
+                <h3>Send a Message</h3>
+                <div id="contact-msg" class="message"></div>
+                <form id="contact-form">
+                    <div class="form-group">
+                        <label class="form-label">Name</label>
+                        <input type="text" id="name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Message</label>
+                        <textarea id="message" rows="4" class="form-control" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+
+            <div class="card" style="display:flex; flex-direction: column; justify-content: center; text-align: center;">
+                <h3>Get In Touch</h3>
+                <p style="margin-top:1rem;"><strong>Email:</strong> support@aifitness.com</p>
+                <p><strong>Phone:</strong> +1 (555) 123-4567</p>
+                <p><strong>Location:</strong> 123 Wellness Ave, Fitness City</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 AI Fitness Trainer Web App. Built for wellbeing.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.getElementById('contact-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            showMessage('contact-msg', 'Thank you! Your message has been sent.', 'success');
+            document.getElementById('contact-form').reset();
+        });
+    </script>
+</body>
+</html>

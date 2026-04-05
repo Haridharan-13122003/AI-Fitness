@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diet Recommendations - AI Fitness</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .meal-card { background: #fdfdfd; padding: 1.5rem; margin-bottom: 1rem; border: 1px solid var(--border-color); border-radius: var(--border-radius); }
+        .meal-card h4 { color: var(--primary-color); border-bottom: 1px solid #eee; padding-bottom: 0.5rem; margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="dashboard.html" class="nav-brand">AI Fitness</a>
+        <div class="nav-links">
+            <a href="dashboard.html" class="btn btn-outline" id="nav-dash-btn">Dashboard</a>
+            <button onclick="logout()" class="btn btn-danger" id="nav-logout-btn">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Diet Recommendations</h2>
+        <p>A structured approach to nutrition based on your selected fitness goal.</p>
+        
+        <div class="card" id="diet-container">
+            <div id="missing-goal">
+                <p>We couldn't find a fitness goal. Please update your profile in the Workout Planner first.</p>
+                <a href="workout.html" class="btn btn-primary">Go to Planner</a>
+            </div>
+            
+            <div id="diet-plan" style="display:none;">
+                <h3 id="diet-title" style="margin-bottom: 1.5rem;"></h3>
+                <div class="grid-2">
+                    <div class="meal-card">
+                        <h4>🍳 Breakfast</h4>
+                        <p id="diet-breakfast"></p>
+                    </div>
+                    <div class="meal-card">
+                        <h4>🥗 Lunch</h4>
+                        <p id="diet-lunch"></p>
+                    </div>
+                    <div class="meal-card">
+                        <h4>🍎 Snacks</h4>
+                        <p id="diet-snacks"></p>
+                    </div>
+                    <div class="meal-card">
+                        <h4>🍗 Dinner</h4>
+                        <p id="diet-dinner"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const userId = localStorage.getItem('userId');
+            try {
+                const res = await fetch(`${API_URL}/user/${userId}`);
+                if(res.ok) {
+                    const data = await res.json();
+                    if(data.goal) {
+                        generateDiet(data.goal);
+                    }
+                }
+            } catch(e) {}
+        });
+
+        function generateDiet(goal) {
+            document.getElementById('missing-goal').style.display = 'none';
+            document.getElementById('diet-plan').style.display = 'block';
+            
+            const title = document.getElementById('diet-title');
+            const breakfast = document.getElementById('diet-breakfast');
+            const lunch = document.getElementById('diet-lunch');
+            const snacks = document.getElementById('diet-snacks');
+            const dinner = document.getElementById('diet-dinner');
+
+            if(goal === 'weight loss') {
+                title.textContent = "Caloric Deficit Diet Plan";
+                breakfast.textContent = "Oatmeal with berries and a scoop of protein powder. Black coffee or green tea.";
+                lunch.textContent = "Grilled chicken salad with mixed greens, tomatoes, cucumbers, and a light vinaigrette.";
+                snacks.textContent = "A handful of almonds or a small apple.";
+                dinner.textContent = "Baked salmon with roasted asparagus and a small portion of quinoa.";
+            } else if(goal === 'muscle gain') {
+                title.textContent = "High Protein Surplus Diet Plan";
+                breakfast.textContent = "4 scrambled eggs, 2 slices of whole wheat toast, and a banana.";
+                lunch.textContent = "Turkey breast wrap with whole wheat tortilla, avocado, cheese, and spinach. Side of sweet potato fries.";
+                snacks.textContent = "Greek yogurt with honey, walnuts, and a protein shake.";
+                dinner.textContent = "Lean beef steak, large portion of brown rice, and steamed broccoli.";
+            } else if(goal === 'stamina improvement') {
+                title.textContent = "Endurance Energy Diet Plan";
+                breakfast.textContent = "Whole grain cereal with milk, and a glass of orange juice.";
+                lunch.textContent = "Whole wheat pasta with lean turkey meatballs and marinara sauce.";
+                snacks.textContent = "Energy bar or banana with peanut butter.";
+                dinner.textContent = "Grilled chicken breast, large baked potato, and mixed vegetables.";
+            } else {
+                title.textContent = "Balanced General Health Plan";
+                breakfast.textContent = "Two eggs any style, whole wheat toast, and a piece of fruit.";
+                lunch.textContent = "Chicken or bean burrito bowl with rice, salsa, and a little cheese.";
+                snacks.textContent = "Carrot sticks with hummus.";
+                dinner.textContent = "Fish or tofu stir-fry with mixed vegetables and a small side of noodles.";
+            }
+        }
+    </script>
+</body>
+</html>
